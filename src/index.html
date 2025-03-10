@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>XML Parser</title>
+    <!-- general style -->
+    <link rel="stylesheet" href="./css/styles.css">
 
     <!-- CodeMirror CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
@@ -18,31 +20,34 @@
     <!-- Optional: Theme -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
 
-    <!-- general style -->
-    <link rel="stylesheet" href="./css/styles.css">
 
 
 </head>
 <body>
     <h1>XML Parser</h1>
-    <div id="uploaddiv">
+    <div id="upload-div">
         <h3>upload your XML file here:</h3>
         <input type="file" id="fileinput" accept=".xml">
     </div>
-
-    <div id="selectiondiv">
-        <h2>SELECT</h2>
+    <div id="div-container">
+    
+        <div id="selection-div">
+            <h2>SELECT</h2>
+            <div id="selection">
+                <button id="select-all">Select All</button>
+        </div>
+        </div>
+    
+        <div id="editor-div">
+               <h2>XML Output</h2>
+<textarea id="editor">
+    <PLACEHOLDER>
+        <message>Hello, this is an XML file!</message>
+    </PLACEHOLDER>
+</textarea>
+        </div>
     </div>
-
-    <div id="editordiv">
-           <h2>XML Output</h2>
-        <textarea id="editor">
-            <PLACEHOLDER>
-                <message>Hello, this is an XML file!</message>
-            </PLACEHOLDER>
-        </textarea>
-    </div>
-
+    <script src="./js/file-logic.js"></script>
     <script src="./js/editor-parser.js"></script>
 </body>
 

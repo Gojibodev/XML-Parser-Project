@@ -1,0 +1,47 @@
+html{
+    background-color: #1f1f1f;
+    color: aliceblue;
+}
+div{
+    /* margin: 10px; */
+    /* padding: 10px; */
+    /* border: 1px solid red; */
+    /* border-radius: 5px; */
+    /* background-color: #333; */
+    /* background-color: red; */
+
+}
+#div-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+#editor-div, #upload-div, #selection-div{
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid red;
+    border-radius: 5px;
+    background-color: #333;
+
+}
+#upload-div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#fileinput{
+    background-color: #333;
+    color: aliceblue;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#fileinput:hover{
+    background-color: #555;
+}
+#editor-div{
+    margin: 10rem;
+}
