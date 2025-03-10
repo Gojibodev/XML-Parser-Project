@@ -21,21 +21,27 @@
     <!-- general style -->
     <link rel="stylesheet" href="./css/styles.css">
 
-</head>
 
+</head>
 <body>
+    <h1>XML Parser</h1>
+    <div id="uploaddiv">
+        <h3>upload your XML file here:</h3>
+        <input type="file" id="fileinput" accept=".xml">
+    </div>
+
     <div id="selectiondiv">
         <h2>SELECT</h2>
     </div>
-    <h2>XML Output</h2>
+
     <div id="editordiv">
-        
+           <h2>XML Output</h2>
+        <textarea id="editor">
+            <PLACEHOLDER>
+                <message>Hello, this is an XML file!</message>
+            </PLACEHOLDER>
+        </textarea>
     </div>
-    <textarea id="editor">
-        <PLACEHOLDER>
-            <message>Hello, this is an XML file!</message>
-        </PLACEHOLDER>
-    </textarea>
 
     <script src="./js/editor-parser.js"></script>
 </body>
