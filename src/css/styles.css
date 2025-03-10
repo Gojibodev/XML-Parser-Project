@@ -17,7 +17,7 @@ div{
     align-items: center;
     height: 100vh;
 }
-#editor-div, #upload-div, #selection-div{
+#editor-div, #selection-div{
     margin: 10px;
     padding: 10px;
     border: 1px solid red;
@@ -43,5 +43,43 @@ div{
     background-color: #555;
 }
 #editor-div{
-    margin: 10rem;
+    margin: 5rem;
+    min-width: 40vw;
+    min-height: 60vh;
+}
+.CodeMirror{
+    background-color: #333;
+    color: aliceblue;
+    min-width: 40vw;
+    min-height: 60vh;
+}
+#selection-div{
+    min-width: 40vw;    
+    min-height: 66vh;
+}
+
+h1, h2, h3, h4, h5, h6{
+    /* color: #f0f0f0; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+button{
+    background-color: #ff6ea6;
+    color: aliceblue;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: #b24d74 2px 2px 5px;
+}
+button:hover{
+    background-color: #ff4d7a;
+}
+
+.selection-elem{
+    border-radius: 10px;
+    background-color: #555;
+    border: 2px solid #1f1f1f;
+    padding: 2px;
 }
