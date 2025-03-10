@@ -17,25 +17,27 @@
 
     <!-- Optional: Theme -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+
+    <!-- general style -->
+    <link rel="stylesheet" href="./css/styles.css">
+
 </head>
 
 <body>
+    <div id="selectiondiv">
+        <h2>SELECT</h2>
+    </div>
     <h2>XML Output</h2>
-
+    <div id="editordiv">
+        
+    </div>
     <textarea id="editor">
         <PLACEHOLDER>
             <message>Hello, this is an XML file!</message>
         </PLACEHOLDER>
     </textarea>
 
-    <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
-            mode: "xml",
-            theme: "dracula", // Change theme if needed
-            lineNumbers: true,
-            autoCloseTags: true
-        });
-    </script>
+    <script src="./js/editor-parser.js"></script>
 </body>
 
 </html>
