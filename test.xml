@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library>
+    <books>
+        <book id="1">
+            <title>Effective Java</title>
+            <author>Joshua Bloch</author>
+            <publisher>Addison-Wesley</publisher>
+            <publishedDate>2008-05-28</publishedDate>
+            <genres>
+                <genre>Programming</genre>
+                <genre>Java</genre>
+            </genres>
+            <availability>
+                <status>Available</status>
+                <copies>3</copies>
+            </availability>
+        </book>
+        <book id="2">
+            <title>Clean Code</title>
+            <author>Robert C. Martin</author>
+            <publisher>Prentice Hall</publisher>
+            <publishedDate>2008-08-01</publishedDate>
+            <genres>
+                <genre>Programming</genre>
+                <genre>Software Engineering</genre>
+            </genres>
+            <availability>
+                <status>Checked Out</status>
+                <dueDate>2023-11-15</dueDate>
+            </availability>
+        </book>
+    </books>
+    <members>
+        <member id="1001">
+            <name>John Doe</name>
+            <membershipDate>2020-01-15</membershipDate>
+            <contact>
+                <email>john.doe@example.com</email>
+                <phone>123-456-7890</phone>
+            </contact>
+            <borrowedBooks>
+                <book id="2">
+                    <borrowDate>2023-10-15</borrowDate>
+                    <dueDate>2023-11-15</dueDate>
+                </book>
+            </borrowedBooks>
+        </member>
+        <member id="1002">
+            <name>Jane Smith</name>
+            <membershipDate>2019-03-22</membershipDate>
+            <contact>
+                <email>jane.smith@example.com</email>
+                <phone>098-765-4321</phone>
+            </contact>
+            <borrowedBooks>
+                <book id="1">
+                    <borrowDate>2023-10-20</borrowDate>
+                    <dueDate>2023-11-20</dueDate>
+                </book>
+            </borrowedBooks>
+        </member>
+    </members>
+    <staff>
+        <employee id="5001">
+            <name>Alice Johnson</name>
+            <position>Librarian</position>
+            <contact>
+                <email>alice.johnson@example.com</email>
+                <phone>555-123-4567</phone>
+            </contact>
+        </employee>
+        <employee id="5002">
+            <name>Bob Brown</name>
+            <position>Assistant Librarian</position>
+            <contact>
+                <email>bob.brown@example.com</email>
+                <phone>555-987-6543</phone>
+            </contact>
+        </employee>
+    </staff>
+</library>
