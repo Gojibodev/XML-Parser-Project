@@ -1,3 +1,4 @@
+import {} from "./file-logic.js";
 document.getElementById('fileinput').addEventListener('change', handleFileSelect, false);
 
 var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
