@@ -29,7 +29,7 @@
     <h1>XML Parser</h1>
     <div id="upload-div">
         <input type="file" id="fileinput" accept=".xml" hidden>
-        <p id="upload-text">Drag & Drop your file here or <span id="browse-btn">Browse</span></p>
+        <p id="upload-text">Drag & Drop your file here or <span id="browse-btn" style="color: #ff4d7a; text-decoration: underline; font-weight: bolder;">Browse</span></p>
     </div>
     
     <div id="div-container">
@@ -90,6 +90,7 @@
                 expander.textContent = 'Show More';
             }
         }
+        // TODO MOVE TO SCRIPT ------>>>>> fk
         document.addEventListener("DOMContentLoaded", function () {
     const uploadDiv = document.getElementById("upload-div");
     const fileInput = document.getElementById("fileinput");
@@ -140,7 +141,7 @@
         let reader = new FileReader();
         reader.onload = function (event) {
             console.log("XML File Loaded:", event.target.result);
-            // You can now process the XML file
+            populateXMLPreview(event.target.result);
         };
         reader.readAsText(file);
     }
