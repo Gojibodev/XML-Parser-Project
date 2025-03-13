@@ -20,9 +20,11 @@ function populateXMLPreview(xmlDoc) {
     const XMLcontainer = editor.getTextArea();
     XMLcontainer.innerHTML = '';
     let xmlContent = "";
-    const elements = xmlDoc.getElementsByTagName('question');
+    var elements = xmlDoc.getElementsByTagName('question');
     
-    console.log(elements); 
+    console.log(elements);
+
+
 
     for (let i = 0; i < elements.length; i++) {
         const element = elements[i];

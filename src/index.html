@@ -40,19 +40,12 @@
                 <button id="select-all">Select All</button>
             </div>
             <div id="selection-container">
-                elements to be included in the XML output:<br>
+                <h4>elements to be included in the XML output:</h4><br>
                 <div class="selection-elem">
                     <input type="checkbox" id="" name="id#" value="0">
                     <label for="select-0">Select 0</label><br>
-                    <button class="expander" onclick="toggleSubitems()">v</button>
                     <div class="subitems" id="subitems">
-                        <input type="checkbox" id="subitem-1" name="subitem-1" value="1">
-                        <label for="subitem-1">Subitem 1</label><br>
-                        <input type="checkbox" id="subitem-2" name="subitem-2" value="2">
-                        <label for="subitem-2">Subitem 2</label><br>
-                        <input type="checkbox" id="subitem-3" name="subitem-3" value="3">
-                        <label for="subitem-3">Subitem 3</label><br>
-                    </div>
+                </div>
                 </div>
                 <div class="selection-elem">
                     <input type="checkbox" id="select-1" name="select-1" value="1">
@@ -79,75 +72,9 @@
     </div>
     <!-- Scripts -->
     <script>
-        function toggleSubitems() {
-            const subitems = document.getElementById('subitems');
-            const expander = document.querySelector('.expander');
-            if (subitems.style.display === 'none' || subitems.style.display === '') {
-                subitems.style.display = 'block';
-                expander.textContent = 'Show Less';
-            } else {
-                subitems.style.display = 'none';
-                expander.textContent = 'Show More';
-            }
-        }
-        // TODO MOVE TO SCRIPT ------>>>>> fk
-        document.addEventListener("DOMContentLoaded", function () {
-    const uploadDiv = document.getElementById("upload-div");
-    const fileInput = document.getElementById("fileinput");
-    const uploadText = document.getElementById("upload-text");
-    const browseBtn = document.getElementById("browse-btn");
 
-    // Click to open file dialog
-    browseBtn.addEventListener("click", () => fileInput.click());
-
-    // Drag Over Event
-    uploadDiv.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        uploadDiv.classList.add("dragover");
-        uploadText.innerText = "Drop the file here!";
-    });
-
-    // Drag Leave Event
-    uploadDiv.addEventListener("dragleave", () => {
-        uploadDiv.classList.remove("dragover");
-        uploadText.innerHTML = `Drag & Drop your file here or <span id="browse-btn">Browse</span>`;
-    });
-
-    // Drop Event
-    uploadDiv.addEventListener("drop", (e) => {
-        e.preventDefault();
-        uploadDiv.classList.remove("dragover");
-
-        let file = e.dataTransfer.files[0];
-        if (file && file.type === "text/xml") {
-            fileInput.files = e.dataTransfer.files;
-            uploadText.innerText = `Uploaded: ${file.name}`;
-            handleFileUpload(file);
-        } else {
-            uploadText.innerText = "Invalid file type! Please upload an XML file.";
-        }
-    });
-
-    // Handle normal file selection
-    fileInput.addEventListener("change", (e) => {
-        let file = e.target.files[0];
-        if (file) {
-            uploadText.innerText = `Uploaded: ${file.name}`;
-            handleFileUpload(file);
-        }
-    });
-
-    function handleFileUpload(file) {
-        let reader = new FileReader();
-        reader.onload = function (event) {
-            console.log("XML File Loaded:", event.target.result);
-            populateXMLPreview(event.target.result);
-        };
-        reader.readAsText(file);
-    }
-});
     </script>
-    <script src="./js/file-logic.js"></script>
+    <script src="./js/worker.js"></script>
     <script src="./js/editor-parser.js"></script>
     <script src="js/DTOs/ClassesDTO.js"></script>
     <script src="./js/import-xml.js"></script>
