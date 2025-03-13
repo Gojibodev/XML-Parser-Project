@@ -54,22 +54,53 @@ function extractQuestionContent(questionElement) {
 }
 
 function proofQuestionType(type, values) {
-    console.log("Checking question type:", type);
-    console.log("Values:", values);
-
     if (type === 'category') {
         let cat = new CategoryDTO();
-        cat.info = values.getElementsByTagName("");
-        console.log("Processing category question...");
+        cat.info = values.info;
+        cat.category = values.category;
     } else if (type === "matching") {
-        console.log("Processing matching question...");
+        let matching = new QuestionDTO();
+        fillBasisDto(matching, values);
+        matching.type = type;
+        matching.correctfeedback = values.correctfeedback;
+        matching.incorrectfeedback = values.incorrectfeedback;
+        matching.partiallycorrectfeedback = values.partiallycorrectfeedback;
+        matching.shuffleanswers = values.shuffleanswers;
+        matching.subquestions = values.subquestion;
     } else if (type === "multichoice") {
-        console.log("Processing multichoice question...");
+        let multichoice = new MultichoiceDTO();
+        fillBasisDto(multichoice, values);
+        multichoice.correctfeedback = values.correctfeedback;
+        multichoice.incorrectfeedback = values.incorrectfeedback;
+        multichoice.partiallycorrectfeedback = values.partiallycorrectfeedback;
+        multichoice.shuffleanswers = values.shuffleanswers;
+        multichoice.single = values.single;
+        multichoice.answernumbering = values.answernumbering;
+        multichoice.showstandardinstruction = values.showstandardinstruction;
+        multichoice.answer = values.answer;
     } else if (type === "truefalse") {
-        console.log("Processing true/false question...");
+        let truefalse = new TrueFalseDTO();
+        fillBasisDto(truefalse, values);
+        truefalse.answer = values.answer;
+        console.log("");
     } else {
-        console.log("Unbekannter Question Type gefunden: " + type);
+        throw("Unbekannter Question Type gefunden: " + type);
     }
+}
+
+function fillBasisDto(basisobj, value) {
+    basisobj.name = value.name;
+    basisobj.questionText = value.questiontext;
+    basisobj.generalfeedback = value.generalfeedback;
+    basisobj.defaultgrade = value.defaultgrade;
+    basisobj.penalty = value.penalty;
+    basisobj.hidden = value.hidden;
+    basisobj.idnumber = value.idnumber;
+    basisobj.tags = value.tags;
+}
+
+function removeTags(value) {
+    return value.replace(/<\/?[^>]+>/g, "");
 }
 
 class QuestionDTO {
@@ -86,15 +117,14 @@ class QuestionDTO {
         this.correctfeedback = "";
         this.partiallycorrectfeedback = "";
         this.incorrectfeedback = "";
-        this.subquestions = [];
         this.tags = [];
     }
 }
 
-class CategoryDTO extends QuestionDTO {
+class CategoryDTO {
     constructor() {
-        super();
         this.type = "category";
+        this.category = "";
         this.info = "";
     }
 }
