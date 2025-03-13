@@ -1,5 +1,3 @@
-import {CategoryDTO} from './DTOs/CategoryDTO'; 
-
 document.getElementById('fileinput').addEventListener('change', handleFileSelect, false);
 
 function handleFileSelect(event) {
