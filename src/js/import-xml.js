@@ -1,5 +1,28 @@
 document.getElementById('fileinput').addEventListener('change', handleFileSelect, false);
 
+// IndexedDB Initialisierung
+let db;
+function initDB() {
+    let request = window.indexedDB.open('questionsDB', 1);
+
+    request.onupgradeneeded = function(event) {
+        db = event.target.result;
+        if (!db.objectStoreNames.contains('questions')) {
+            db.createObjectStore('questions', { keyPath: 'id', autoIncrement: true });
+        }
+    };
+
+    request.onsuccess = function(event) {
+        db = event.target.result;
+    };
+
+    request.onerror = function(event) {
+        console.error('Fehler beim Öffnen der Datenbank:', event.target.error);
+    };
+}
+
+initDB();
+
 function handleFileSelect(event) {
     const file = event.target.files[0];
     if (file) {
@@ -14,13 +37,10 @@ function handleFileSelect(event) {
 }
 
 function populateXMLPreview(xmlDoc) {
-    console.log(xmlDoc);
-    console.log(editor);
-    console.log(editor.getTextArea());
     const XMLcontainer = editor.getTextArea();
     XMLcontainer.innerHTML = '';
     let xmlContent = "";
-    var elements = xmlDoc.getElementsByTagName('question');
+    let elements = xmlDoc.getElementsByTagName('question');
     
     console.log(elements);
 
@@ -44,42 +64,64 @@ function extractQuestionContent(questionElement) {
         let child = questionElement.children[i];
         content[child.tagName] = child.innerHTML.trim();
     }
-
     return content;
 }
 
 function proofQuestionType(type, values) {
+    let questionObj;
+
     if (type === 'category') {
-        let cat = new CategoryDTO();
-        cat.info = values.info;
-        cat.category = values.category;
+        questionObj = new CategoryDTO();
+        questionObj.info = values.info;
+        questionObj.category = values.category;
     } else if (type === "matching") {
-        let matching = new QuestionDTO(); 
-        fillBasisDto(matching, values);
-        matching.type = type;
-        matching.correctfeedback = values.correctfeedback;
-        matching.incorrectfeedback = values.incorrectfeedback;
-        matching.partiallycorrectfeedback = values.partiallycorrectfeedback;
-        matching.shuffleanswers = values.shuffleanswers;
-        matching.subquestions = values.subquestion;
+        questionObj = new QuestionDTO();
+        fillBasisDto(questionObj, values);
+        questionObj.type = type;
+        questionObj.correctfeedback = values.correctfeedback;
+        questionObj.incorrectfeedback = values.incorrectfeedback;
+        questionObj.partiallycorrectfeedback = values.partiallycorrectfeedback;
+        questionObj.shuffleanswers = values.shuffleanswers;
+        questionObj.subquestions = values.subquestion;
     } else if (type === "multichoice") {
-        let multichoice = new MultichoiceDTO();
-        fillBasisDto(multichoice, values);
-        multichoice.correctfeedback = values.correctfeedback;
-        multichoice.incorrectfeedback = values.incorrectfeedback;
-        multichoice.partiallycorrectfeedback = values.partiallycorrectfeedback;
-        multichoice.shuffleanswers = values.shuffleanswers;
-        multichoice.single = values.single;
-        multichoice.answernumbering = values.answernumbering;
-        multichoice.showstandardinstruction = values.showstandardinstruction;
-        multichoice.answer = values.answer;
+        questionObj = new MultichoiceDTO();
+        fillBasisDto(questionObj, values);
+        questionObj.correctfeedback = values.correctfeedback;
+        questionObj.incorrectfeedback = values.incorrectfeedback;
+        questionObj.partiallycorrectfeedback = values.partiallycorrectfeedback;
+        questionObj.shuffleanswers = values.shuffleanswers;
+        questionObj.single = values.single;
+        questionObj.answernumbering = values.answernumbering;
+        questionObj.showstandardinstruction = values.showstandardinstruction;
+        questionObj.answer = values.answer;
     } else if (type === "truefalse") {
-        let truefalse = new TrueFalseDTO();
-        fillBasisDto(truefalse, values);
-        truefalse.answer = values.answer;
+        questionObj = new TrueFalseDTO();
+        fillBasisDto(questionObj, values);
+        questionObj.answer = values.answer;
     } else {
         throw("Unbekannter Question Type gefunden: " + type);
     }
+    
+    saveToDB(questionObj);
+}
+
+function saveToDB(questionObj) {
+    if (!db) {
+        console.error("Datenbank nicht initialisiert");
+        return;
+    }
+
+    let transaction = db.transaction(['questions'], 'readwrite');
+    let objectStore = transaction.objectStore('questions');
+    let request = objectStore.add(questionObj);
+
+    request.onsuccess = function() {
+        console.log("Frage erfolgreich gespeichert.");
+    };
+
+    request.onerror = function(event) {
+        console.error("Fehler beim Speichern der Frage:", event.target.error);
+    };
 }
 
 function fillBasisDto(basisobj, value) {
@@ -97,6 +139,6 @@ function removeTags(value) {
     return value.replace(/<\/?[^>]+>/g, "");
 }
 
-function addToEditor(xmlObj){
+function addToEditor(xmlObj) {
     editor.setValue(editor.getValue() + xmlObj.outerHTML);
 }
