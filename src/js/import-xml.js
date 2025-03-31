@@ -1,4 +1,5 @@
-document.getElementById('file-input').addEventListener('change', handleFileSelect, false);
+const fileInput = document.getElementById('file-input');
+fileInput.addEventListener('change', handleFileSelectImport, false);
 
 let db;
 function initDB() {
@@ -24,7 +25,7 @@ function initDB() {
 
 initDB();
 
-function handleFileSelect(event) {
+function handleFileSelectImport(event) {
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
