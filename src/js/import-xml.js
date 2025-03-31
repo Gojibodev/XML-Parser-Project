@@ -1,4 +1,4 @@
-document.getElementById('fileinput').addEventListener('change', handleFileSelect, false);
+document.getElementById('file-input').addEventListener('change', handleFileSelect, false);
 
 // IndexedDB Initialisierung
 let db;
