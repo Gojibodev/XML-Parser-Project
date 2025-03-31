@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<!-- question: 0  -->
+  <question type="category">
+    <category>
+      <text>$course$/top/Standard für FA12_1_Projekt_2022_2023</text>
+    </category>
+    <info format="moodle_auto_format">
+      <text>Standardkategorie für Fragen, die im Kontext 'FA12_1_Projekt_2022_2023' freigegeben sind.</text>
+    </info>
+    <idnumber></idnumber>
+  </question>
+
+<!-- question: 25961  -->
+  <question type="matching">
+    <name>
+      <text>Zuordnung Arbeiten mit Frameworks und ohne</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p dir="ltr" style="text-align: left;">Ordnen Sie folgende Begriffe zu!</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <shuffleanswers>true</shuffleanswers>
+    <correctfeedback format="html">
+      <text>Die Antwort ist richtig.</text>
+    </correctfeedback>
+    <partiallycorrectfeedback format="html">
+      <text>Die Antwort ist teilweise richtig.</text>
+    </partiallycorrectfeedback>
+    <incorrectfeedback format="html">
+      <text>Die Antwort ist falsch.</text>
+    </incorrectfeedback>
+    <shownumcorrect/>
+    <subquestion format="html">
+      <text><![CDATA[<p dir="ltr" style="text-align: left;">Spezifische Anforderungen<br></p>]]></text>
+      <answer>
+        <text>ohne Framework</text>
+      </answer>
+    </subquestion>
+    <subquestion format="html">
+      <text><![CDATA[<p dir="ltr" style="text-align: left;">Leichtgewichtige Lösungen<br></p>]]></text>
+      <answer>
+        <text>ohne Framework</text>
+      </answer>
+    </subquestion>
+    <subquestion format="html">
+      <text><![CDATA[<p dir="ltr" style="text-align: left;">Bessere Kontrolle<br></p>]]></text>
+      <answer>
+        <text>ohne Framework</text>
+      </answer>
+    </subquestion>
+    <subquestion format="html">
+      <text><![CDATA[<p dir="ltr" style="text-align: left;">Konsistenz<br></p>]]></text>
+      <answer>
+        <text>mit Framework</text>
+      </answer>
+    </subquestion>
+    <subquestion format="html">
+      <text><![CDATA[<p dir="ltr" style="text-align: left;">Klar definierte Schnittstellen<br></p>]]></text>
+      <answer>
+        <text>mit Framework</text>
+      </answer>
+    </subquestion>
+    <subquestion format="html">
+      <text><![CDATA[<p dir="ltr" style="text-align: left;">Zeit- und Ressourceneinsparungen<br></p>]]></text>
+      <answer>
+        <text>mit Framework</text>
+      </answer>
+    </subquestion>
+    <tags>
+      <tag><text>gln</text>
+</tag>
+    </tags>
+  </question>
+
+<!-- question: 25962  -->
+  <question type="multichoice">
+    <name>
+      <text>Aussagen zu PHP</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p dir="ltr" style="text-align: left;">Welche Aussagen über PHP sind richtig?</p><p dir="ltr" style="text-align: left;">PHP ist ...<br></p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>2.0000000</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <showstandardinstruction>0</showstandardinstruction>
+    <correctfeedback format="html">
+      <text>Die Antwort ist richtig.</text>
+    </correctfeedback>
+    <partiallycorrectfeedback format="html">
+      <text>Die Antwort ist teilweise richtig.</text>
+    </partiallycorrectfeedback>
+    <incorrectfeedback format="html">
+      <text>Die Antwort ist falsch.</text>
+    </incorrectfeedback>
+    <shownumcorrect/>
+    <answer fraction="0" format="html">
+      <text><![CDATA[<p dir="ltr" style="text-align: left;">plattformabhängig.<br></p>]]></text>
+      <feedback format="html">
+        <text></text>
+      </feedback>
+    </answer>
+    <answer fraction="0" format="html">
+      <text><![CDATA[<p dir="ltr" style="text-align: left;">eine clientseitige Scriptsprache.<br></p>]]></text>
+      <feedback format="html">
+        <text></text>
+      </feedback>
+    </answer>
+    <answer fraction="0" format="html">
+      <text><![CDATA[<p dir="ltr" style="text-align: left;">optimiert zum Entwurf des Frontends.<br></p>]]></text>
+      <feedback format="html">
+        <text></text>
+      </feedback>
+    </answer>
+    <answer fraction="0" format="html">
+      <text><![CDATA[<p dir="ltr" style="text-align: left;">eine von Javascript abgeleitete Sprache.<br></p>]]></text>
+      <feedback format="html">
+        <text></text>
+      </feedback>
+    </answer>
+    <answer fraction="100" format="html">
+      <text><![CDATA[<p dir="ltr" style="text-align: left;">Keine Antwort ist richtig<br></p>]]></text>
+      <feedback format="html">
+        <text></text>
+      </feedback>
+    </answer>
+    <tags>
+      <tag><text>gln</text>
+</tag>
+    </tags>
+  </question>
+  
+<!-- question: 25963  -->
+  <question type="truefalse">
+    <name>
+      <text>Einbettung von PHP in ein HTML-Script</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Man erkennt den Beginn von PHP-Quelltext innerhalb von HTML an folgendem TAG:</p><p>&lt;?php <br></p><p><br></p><p>&gt;<br></p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>1.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <answer fraction="100" format="moodle_auto_format">
+      <text>true</text>
+      <feedback format="html">
+        <text></text>
+      </feedback>
+    </answer>
+    <answer fraction="0" format="moodle_auto_format">
+      <text>false</text>
+      <feedback format="html">
+        <text></text>
+      </feedback>
+    </answer>
+    <tags>
+      <tag><text>gln</text>
+</tag>
+    </tags>
+  </question>
+
+</quiz>
