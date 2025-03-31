@@ -2,7 +2,7 @@
 // TODO MOVE TO SCRIPT ------>>>>> fk
 document.addEventListener("DOMContentLoaded", function () {
     const uploadDiv = document.getElementById("upload-div");
-    const fileInput = document.getElementById("fileinput");
+    const fileInput = document.getElementById("file-input");
     const uploadText = document.getElementById("upload-text");
     const browseBtn = document.getElementById("browse-btn");
     // console.log("elements:", elements);
