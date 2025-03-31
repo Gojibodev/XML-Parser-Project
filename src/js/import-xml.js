@@ -1,4 +1,5 @@
-document.getElementById('fileinput').addEventListener('change', handleFileSelect, false);
+const fileInput = document.getElementById('file-input');
+fileInput.addEventListener('change', handleFileSelectImport, false);
 
 // IndexedDB Initialisierung
 let db;
@@ -23,7 +24,7 @@ function initDB() {
 
 initDB();
 
-function handleFileSelect(event) {
+function handleFileSelectImport(event) {
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
