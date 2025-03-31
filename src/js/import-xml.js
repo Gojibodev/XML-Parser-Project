@@ -1,6 +1,5 @@
 document.getElementById('file-input').addEventListener('change', handleFileSelect, false);
 
-// IndexedDB Initialisierung
 let db;
 function initDB() {
     let request = window.indexedDB.open('questionsDB', 1);
@@ -14,6 +13,8 @@ function initDB() {
 
     request.onsuccess = function(event) {
         db = event.target.result;
+        console.log("IndexedDB erfolgreich geöffnet.");
+        displayQuestions(); // Zeigt vorhandene Fragen beim Laden der Seite
     };
 
     request.onerror = function(event) {
@@ -41,20 +42,18 @@ function populateXMLPreview(xmlDoc) {
     XMLcontainer.innerHTML = '';
     let xmlContent = "";
     let elements = xmlDoc.getElementsByTagName('question');
-    
-    console.log(elements);
-
-
 
     for (let i = 0; i < elements.length; i++) {
         const element = elements[i];
         let questionType = element.getAttribute('type');
         let questionContent = extractQuestionContent(element);
-        proofQuestionType(questionType, questionContent);
+        let obj = getQuestionObj(questionType, questionContent);
+        saveToDB(obj);
         xmlContent += element.outerHTML;
     }
 
     editor.setValue(xmlContent);
+    displayQuestions(); // Zeigt sofort die neuen Fragen
 }
 
 function extractQuestionContent(questionElement) {
@@ -67,10 +66,10 @@ function extractQuestionContent(questionElement) {
     return content;
 }
 
-function proofQuestionType(type, values) {
+function getQuestionObj(type, values) {
     let questionObj;
 
-    if (type === 'category') {
+    if (type === "category") {
         questionObj = new CategoryDTO();
         questionObj.info = values.info;
         questionObj.category = values.category;
@@ -102,12 +101,12 @@ function proofQuestionType(type, values) {
         throw("Unbekannter Question Type gefunden: " + type);
     }
     
-    saveToDB(questionObj);
+    return questionObj;
 }
 
 function saveToDB(questionObj) {
     if (!db) {
-        console.error("Datenbank nicht initialisiert");
+        console.error("Datenbank nicht initialisiert.");
         return;
     }
 
@@ -117,6 +116,7 @@ function saveToDB(questionObj) {
 
     request.onsuccess = function() {
         console.log("Frage erfolgreich gespeichert.");
+        displayQuestions();
     };
 
     request.onerror = function(event) {
@@ -139,6 +139,103 @@ function removeTags(value) {
     return value.replace(/<\/?[^>]+>/g, "");
 }
 
-function addToEditor(xmlObj) {
-    editor.setValue(editor.getValue() + xmlObj.outerHTML);
+async function displayQuestions() {
+    const selectionContainer = document.getElementById('selection-container');
+    if (!selectionContainer) {
+        console.error("selection-container nicht gefunden!");
+        return;
+    }
+
+    try {
+        const questions = await getQuestions();
+
+        clearSelectionContainer();
+
+        questions.forEach((question, index) => {
+            const div = document.createElement('div');
+            div.classList.add('selection-elem');
+
+            let questionObj = getQuestionObj(question.type, question)
+
+            if (questionObj.type == 'category') {
+                div.innerHTML = getCategoryHtml(questionObj, index);
+            } else if (questionObj.type == 'matching') {
+                div.innerHTML = getMatchingHtml(questionObj, index);
+            } else if (questionObj.type == 'multichoice') {
+                div.innerHTML = getMulitchoiceHtml(questionObj, index);
+            } else if (questionObj.type == 'truefalse') {
+                div.innerHTML = getTruefalseHtml(questionObj, index);
+            }
+
+            selectionContainer.appendChild(div);
+        });
+    } catch (error) {
+        console.error("Fehler beim Laden der Fragen:", error);
+    }
+}
+
+function getCategoryHtml(categoryObj, index) {
+    return `<input type="checkbox" id="select-${index}" name="select-${index}" value="${index}">
+                <label for="select-${index}">${categoryObj.info || `Frage ${index + 1}`}</label>
+                <br>
+                <div class="subitems">
+                    <p><strong>Fragetext:</strong> ${categoryObj.questionText || 'Keine Frage vorhanden'}</p>
+                    <p><strong>Antwort:</strong> ${categoryObj.answer || 'Keine Antwort'}</p>
+                </div>`;
+}
+
+function getMatchingHtml(matchingObj, index) {
+    return `
+                <input type="checkbox" id="select-${index}" name="select-${index}" value="${index}">
+                <label for="select-${index}">${matchingObj.name || `Frage ${index + 1}`}</label>
+                <br>
+                <div class="subitems">
+                    <p><strong>Fragetext:</strong> ${matchingObj.questionText || 'Keine Frage vorhanden'}</p>
+                    <p><strong>Antwort:</strong> ${matchingObj.answer || 'Keine Antwort'}</p>
+                </div>`;
+}
+
+function getMulitchoiceHtml(multichoiceObj, index) {
+    return `
+                <input type="checkbox" id="select-${index}" name="select-${index}" value="${index}">
+                <label for="select-${index}">${multichoiceObj.name || `Frage ${index + 1}`}</label>
+                <br>
+                <div class="subitems">
+                    <p><strong>Fragetext:</strong> ${multichoiceObj.questionText || 'Keine Frage vorhanden'}</p>
+                    <p><strong>Antwort:</strong> ${multichoiceObj.answer || 'Keine Antwort'}</p>
+                </div>`;
+}
+
+function getTruefalseHtml(truefalseObj, index) {
+    return `
+                <input type="checkbox" id="select-${index}" name="select-${index}" value="${index}">
+                <label for="select-${index}">${truefalseObj.name || `Frage ${index + 1}`}</label>
+                <br>
+                <div class="subitems">
+                    <p><strong>Fragetext:</strong> ${truefalseObj.questionText || 'Keine Frage vorhanden'}</p>
+                    <p><strong>Antwort:</strong> ${truefalseObj.answer || 'Keine Antwort'}</p>
+                </div>`;
+}
+
+function clearSelectionContainer() {
+    const selectionContainer = document.getElementById('selection-container');
+    if (selectionContainer) {
+        selectionContainer.innerHTML = `<h4>Elements to be included in the XML output:</h4><br>`;
+    }
+}
+
+async function getQuestions() {
+    return new Promise((resolve, reject) => {
+        let transaction = db.transaction(['questions'], 'readonly');
+        let objectStore = transaction.objectStore('questions');
+        let request = objectStore.getAll();
+
+        request.onsuccess = function () {
+            resolve(request.result);
+        };
+
+        request.onerror = function (event) {
+            reject('Fehler beim Abrufen der Fragen: ' + event.target.error);
+        };
+    });
 }
