@@ -2,6 +2,7 @@ const fileInput = document.getElementById('file-input');
 fileInput.addEventListener('change', handleFileSelectImport, false);
 
 let db;
+
 function initDB() {
     let request = window.indexedDB.open('questionsDB', 1);
 
@@ -15,7 +16,7 @@ function initDB() {
     request.onsuccess = function(event) {
         db = event.target.result;
         console.log("IndexedDB erfolgreich geöffnet.");
-        displayQuestions(); // Zeigt vorhandene Fragen beim Laden der Seite
+        displayQuestions();
     };
 
     request.onerror = function(event) {
@@ -41,7 +42,6 @@ function handleFileSelectImport(event) {
 function populateXMLPreview(xmlDoc) {
     const XMLcontainer = editor.getTextArea();
     XMLcontainer.innerHTML = '';
-    let xmlContent = "";
     let elements = xmlDoc.getElementsByTagName('question');
 
     for (let i = 0; i < elements.length; i++) {
@@ -49,17 +49,16 @@ function populateXMLPreview(xmlDoc) {
         let questionType = element.getAttribute('type');
         let questionContent = extractQuestionContent(element);
         let obj = getQuestionObj(questionType, questionContent);
+        obj.originalXml = element.outerHTML;
+        obj.selected = true; // standardmäßig ausgewählt
         saveToDB(obj);
-        xmlContent += element.outerHTML;
     }
 
-    editor.setValue(xmlContent);
-    displayQuestions(); // Zeigt sofort die neuen Fragen
+    displayQuestions();
 }
 
 function extractQuestionContent(questionElement) {
     let content = {};
-    
     for (let i = 0; i < questionElement.children.length; i++) {
         let child = questionElement.children[i];
         content[child.tagName] = child.innerHTML.trim();
@@ -101,7 +100,7 @@ function getQuestionObj(type, values) {
     } else {
         throw("Unbekannter Question Type gefunden: " + type);
     }
-    
+
     return questionObj;
 }
 
@@ -123,6 +122,20 @@ function saveToDB(questionObj) {
     request.onerror = function(event) {
         console.error("Fehler beim Speichern der Frage:", event.target.error);
     };
+}
+
+function updateSelectedStatus(index, isSelected) {
+    getQuestions().then(questions => {
+        const question = questions[index];
+        if (!question) return;
+        question.selected = isSelected;
+
+        let transaction = db.transaction(['questions'], 'readwrite');
+        let objectStore = transaction.objectStore('questions');
+        objectStore.put(question).onsuccess = function () {
+            updateXmlOutput();
+        };
+    });
 }
 
 function fillBasisDto(basisobj, value) {
@@ -149,73 +162,56 @@ async function displayQuestions() {
 
     try {
         const questions = await getQuestions();
-
         clearSelectionContainer();
 
         questions.forEach((question, index) => {
             const div = document.createElement('div');
             div.classList.add('selection-elem');
 
-            let questionObj = getQuestionObj(question.type, question)
+            let questionObj = getQuestionObj(question.type, question);
+            const checked = question.selected !== false ? 'checked' : '';
 
-            if (questionObj.type == 'category') {
-                div.innerHTML = getCategoryHtml(questionObj, index);
-            } else if (questionObj.type == 'matching') {
-                div.innerHTML = getMatchingHtml(questionObj, index);
-            } else if (questionObj.type == 'multichoice') {
-                div.innerHTML = getMulitchoiceHtml(questionObj, index);
-            } else if (questionObj.type == 'truefalse') {
-                div.innerHTML = getTruefalseHtml(questionObj, index);
-            }
+            let input = `<input type="checkbox" id="select-${index}" name="select-${index}" value="${index}" ${checked}>
+                         <label for="select-${index}">${question.name || `Frage ${index + 1}`}</label><br>`;
 
+            div.innerHTML = input + `<div class="subitems"><p><strong>Fragetext:</strong> ${question.questionText || 'Keine Frage vorhanden'}</p></div>`;
             selectionContainer.appendChild(div);
         });
+
+        setTimeout(() => {
+            const checkboxes = document.querySelectorAll('#selection-container input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    const index = parseInt(checkbox.value);
+                    const isSelected = checkbox.checked;
+                    updateSelectedStatus(index, isSelected);
+                });
+            });
+            updateXmlOutput();
+        }, 0);
+
     } catch (error) {
         console.error("Fehler beim Laden der Fragen:", error);
     }
 }
 
-function getCategoryHtml(categoryObj, index) {
-    return `<input type="checkbox" id="select-${index}" name="select-${index}" value="${index}">
-                <label for="select-${index}">${categoryObj.info || `Frage ${index + 1}`}</label>
-                <br>
-                <div class="subitems">
-                    <p><strong>Fragetext:</strong> ${categoryObj.questionText || 'Keine Frage vorhanden'}</p>
-                    <p><strong>Antwort:</strong> ${categoryObj.answer || 'Keine Antwort'}</p>
-                </div>`;
-}
+function updateXmlOutput() {
+    getQuestions().then(questions => {
+        let outputLines = [];
+        questions.forEach((question) => {
+            if (!question.originalXml) return;
+            const xml = question.originalXml.trim();
+            let lines = xml.split('\n');
 
-function getMatchingHtml(matchingObj, index) {
-    return `
-                <input type="checkbox" id="select-${index}" name="select-${index}" value="${index}">
-                <label for="select-${index}">${matchingObj.name || `Frage ${index + 1}`}</label>
-                <br>
-                <div class="subitems">
-                    <p><strong>Fragetext:</strong> ${matchingObj.questionText || 'Keine Frage vorhanden'}</p>
-                    <p><strong>Antwort:</strong> ${matchingObj.answer || 'Keine Antwort'}</p>
-                </div>`;
-}
+            if (!question.selected) {
+                lines = lines.map(line => `<!-- ${line} -->`);
+            }
 
-function getMulitchoiceHtml(multichoiceObj, index) {
-    return `
-                <input type="checkbox" id="select-${index}" name="select-${index}" value="${index}">
-                <label for="select-${index}">${multichoiceObj.name || `Frage ${index + 1}`}</label>
-                <br>
-                <div class="subitems">
-                    <p><strong>Fragetext:</strong> ${multichoiceObj.questionText || 'Keine Frage vorhanden'}</p>
-                    <p><strong>Antwort:</strong> ${multichoiceObj.answer || 'Keine Antwort'}</p>
-                </div>`;
-}
+            outputLines.push(lines.join('\n'));
+        });
 
-function getTruefalseHtml(truefalseObj, index) {
-    return `
-                <input type="checkbox" id="select-${index}" name="select-${index}" value="${index}">
-                <label for="select-${index}">${truefalseObj.name || `Frage ${index + 1}`}</label>
-                <br>
-                <div class="subitems">
-                    <p><strong>Fragetext:</strong> ${truefalseObj.questionText || 'Keine Frage vorhanden'}</p>
-                    <p><strong>Antwort:</strong> ${truefalseObj.answer || 'Keine Antwort'}</p>
-                </div>`;
+        editor.setValue(outputLines.join('\n\n'));
+    });
 }
 
 function clearSelectionContainer() {

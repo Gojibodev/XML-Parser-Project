@@ -171,3 +171,15 @@ label {
     align-items: center;
     margin: 10px;
 }
+
+.xml-removed {
+    background-color: #ffcccc;
+    color: #a10000;
+    display: block;
+    font-style: italic;
+}
+
+.xml-removed::before {
+    content: "✖ ";
+    color: red;
+}
