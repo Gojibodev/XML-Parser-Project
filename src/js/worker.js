@@ -1,4 +1,3 @@
-
 // TODO MOVE TO SCRIPT ------>>>>> fk
 document.addEventListener("DOMContentLoaded", function () {
     const uploadDiv = document.getElementById("upload-div");
@@ -54,9 +53,40 @@ document.addEventListener("DOMContentLoaded", function () {
         };
         reader.readAsText(file);
     }
+
+    // Add event listener for selection elements
+    setupSelectionElements();
+    
+    // Setup select all button
+    setupSelectAllButton();
+});
+
+function setupSelectionElements() {
+    // Get all selection elements
+    const selectionElements = document.querySelectorAll('.selection-elem');
+    
+    selectionElements.forEach(elem => {
+        const label = elem.querySelector('label');
+        if (label) {
+            label.addEventListener('click', function(e) {
+                // Prevent checkbox toggle when clicking on label
+                e.preventDefault();
+                
+                // Toggle expanded class
+                elem.classList.toggle('expanded');
+            });
+        }
+    });
+}
+
+// Make sure to call this function when new elements are added
+document.addEventListener('DOMContentLoaded', function() {
+    setupSelectionElements();
 });
 
 function toggleSubitems() {
+    setupSelectionElements();
+    
     const toggleSubitemsbtns = document.querySelectorAll('.toggle-subitems');
     toggleSubitemsbtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -72,6 +102,33 @@ function toggleSubitems() {
             }
         });
     });
+}
+
+function setupSelectAllButton() {
+    const selectAllBtn = document.getElementById('select-all');
+    if (selectAllBtn) {
+        selectAllBtn.addEventListener('click', function() {
+            const checkboxes = document.querySelectorAll('#selection-container input[type="checkbox"]');
+            
+            // Determine if we should check or uncheck all
+            // If all are checked, then uncheck all. Otherwise, check all.
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            checkboxes.forEach(checkbox => {
+                // Only update if the state is changing
+                if (checkbox.checked !== !allChecked) {
+                    checkbox.checked = !allChecked;
+                    
+                    // Trigger the change event manually
+                    const event = new Event('change', {
+                        bubbles: true,
+                        cancelable: true,
+                    });
+                    checkbox.dispatchEvent(event);
+                }
+            });
+        });
+    }
 }
     // const subitems = document.getElementById('subitems');
     // const expander = document.querySelector('.expander');

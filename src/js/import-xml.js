@@ -68,7 +68,10 @@ export async function displayQuestions() {
     setTimeout(() => {
         const checkboxes = document.querySelectorAll('#selection-container input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', async () => {
+            checkbox.addEventListener('change', async (e) => {
+                // Don't bubble up to prevent the label click handler from toggling too
+                e.stopPropagation();
+                
                 const index = parseInt(checkbox.value);
                 const isSelected = checkbox.checked;
                 const questions = await getQuestions();
@@ -77,6 +80,10 @@ export async function displayQuestions() {
                 updateXmlOutput();
             });
         });
+        
+        // Set up expand/collapse functionality for newly created elements
+        setupSelectionElements();
+        
         updateXmlOutput();
     }, 0);
 }
