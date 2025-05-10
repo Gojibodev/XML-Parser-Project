@@ -1,4 +1,3 @@
-// import-xml.js
 import { initDB, saveToDB, getQuestions, updateQuestion, deleteQuestionsByFilename } from './db.js';
 import { getQuestionObj, fillBasisDto } from './questionLogic.js';
 import { editor } from './editor-parser.js';
@@ -6,7 +5,6 @@ import { setupUploadHandlers } from './upload-handler.js';
 
 initDB(displayQuestions);
 
-// Initialisiere Upload-Events
 setupUploadHandlers(
     'file-input',
     'browse-btn',
@@ -40,7 +38,7 @@ function populateXMLPreview(xmlDoc, filename) {
         const obj = getQuestionObj(questionType, questionContent);
         obj.originalXml = element.outerHTML;
         obj.selected = true;
-        obj.sourceFileName = filename; // Datei-Name wird gespeichert
+        obj.sourceFileName = filename;
 
         saveToDB(obj).catch(err => console.error("Fehler beim Speichern:", err));
     }
@@ -69,9 +67,9 @@ export async function displayQuestions() {
         div.classList.add('selection-elem');
 
         const checked = question.selected !== false ? 'checked' : '';
+        const labelText = `${question.name || `Frage ${index + 1}`} [${question.sourceFileName || 'Unbekannt'}]`;
         const input = `<input type="checkbox" id="select-${index}" value="${index}" ${checked}>
-` +
-                      `<label for="select-${index}">${question.name || `Frage ${index + 1}`}</label><br>`;
+                       <label for="select-${index}">${labelText}</label><br>`;
 
         div.innerHTML = input + `<div class="subitems"><p><strong>Fragetext:</strong> ${question.questionText || 'Keine Frage vorhanden'}</p></div>`;
         selectionContainer.appendChild(div);
