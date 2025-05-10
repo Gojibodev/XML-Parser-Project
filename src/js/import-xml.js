@@ -1,25 +1,36 @@
-import { initDB, saveToDB, getQuestions, updateQuestion } from './db.js';
+// import-xml.js
+import { initDB, saveToDB, getQuestions, updateQuestion, deleteQuestionsByFilename } from './db.js';
 import { getQuestionObj, fillBasisDto } from './questionLogic.js';
-
-const fileInput = document.getElementById('file-input');
-fileInput.addEventListener('change', handleFileSelectImport, false);
+import { editor } from './editor-parser.js';
+import { setupUploadHandlers } from './upload-handler.js';
 
 initDB(displayQuestions);
 
-function handleFileSelectImport(event) {
-    const file = event.target.files[0];
-    if (file) {
+// Initialisiere Upload-Events
+setupUploadHandlers(
+    'file-input',
+    'browse-btn',
+    'upload-text',
+    'upload-list',
+    handleXmlFiles,
+    deleteFileByName
+);
+
+function handleXmlFiles(files) {
+    Array.from(files).forEach(file => {
+        if (!file.name.endsWith('.xml')) return;
+
         const reader = new FileReader();
         reader.onload = function (e) {
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(e.target.result, "text/xml");
-            populateXMLPreview(xmlDoc);
+            populateXMLPreview(xmlDoc, file.name);
         };
         reader.readAsText(file);
-    }
+    });
 }
 
-function populateXMLPreview(xmlDoc) {
+function populateXMLPreview(xmlDoc, filename) {
     const elements = xmlDoc.getElementsByTagName('question');
 
     for (let i = 0; i < elements.length; i++) {
@@ -29,6 +40,7 @@ function populateXMLPreview(xmlDoc) {
         const obj = getQuestionObj(questionType, questionContent);
         obj.originalXml = element.outerHTML;
         obj.selected = true;
+        obj.sourceFileName = filename; // Datei-Name wird gespeichert
 
         saveToDB(obj).catch(err => console.error("Fehler beim Speichern:", err));
     }
@@ -58,20 +70,18 @@ export async function displayQuestions() {
 
         const checked = question.selected !== false ? 'checked' : '';
         const input = `<input type="checkbox" id="select-${index}" value="${index}" ${checked}>
-                       <label for="select-${index}">${question.name || `Frage ${index + 1}`}</label><br>`;
+` +
+                      `<label for="select-${index}">${question.name || `Frage ${index + 1}`}</label><br>`;
 
         div.innerHTML = input + `<div class="subitems"><p><strong>Fragetext:</strong> ${question.questionText || 'Keine Frage vorhanden'}</p></div>`;
         selectionContainer.appendChild(div);
     });
 
-    // Checkbox-Handler + XML aktualisieren
     setTimeout(() => {
         const checkboxes = document.querySelectorAll('#selection-container input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', async (e) => {
-                // Don't bubble up to prevent the label click handler from toggling too
                 e.stopPropagation();
-                
                 const index = parseInt(checkbox.value);
                 const isSelected = checkbox.checked;
                 const questions = await getQuestions();
@@ -80,10 +90,8 @@ export async function displayQuestions() {
                 updateXmlOutput();
             });
         });
-        
-        // Set up expand/collapse functionality for newly created elements
+
         setupSelectionElements();
-        
         updateXmlOutput();
     }, 0);
 }
@@ -113,4 +121,10 @@ function clearSelectionContainer() {
     if (selectionContainer) {
         selectionContainer.innerHTML = `<h4>Elements to be included in the XML output:</h4><br>`;
     }
+}
+
+function deleteFileByName(filename) {
+    deleteQuestionsByFilename(filename).then(() => {
+        displayQuestions();
+    });
 }

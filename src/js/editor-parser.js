@@ -1,6 +1,6 @@
-var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+export const editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
     mode: "xml",
-    theme: "dracula", // Change theme if needed
+    theme: "dracula",
     lineNumbers: true,
     autoCloseTags: true
 });

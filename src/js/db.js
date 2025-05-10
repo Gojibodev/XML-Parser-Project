@@ -12,7 +12,7 @@ export function initDB(callback) {
 
     request.onsuccess = function (event) {
         db = event.target.result;
-        console.log("IndexedDB erfolgreich geöffnet.");
+        console.log('IndexedDB geöffnet.');
         if (callback) callback();
     };
 
@@ -21,48 +21,97 @@ export function initDB(callback) {
     };
 }
 
-export function saveToDB(questionObj) {
+export async function deleteQuestionsByFilename(filename) {
     return new Promise((resolve, reject) => {
-        if (!db) return reject("Datenbank nicht initialisiert.");
+        if (!db) return reject("DB nicht initialisiert");
 
-        const tx = db.transaction(['questions'], 'readwrite');
+        const tx = db.transaction('questions', 'readwrite');
         const store = tx.objectStore('questions');
-        const req = store.add(questionObj);
+        const getAllRequest = store.getAll();
 
-        req.onsuccess = () => resolve();
-        req.onerror = (e) => reject(e.target.error);
+        getAllRequest.onsuccess = () => {
+            const allQuestions = getAllRequest.result;
+            const toDelete = allQuestions.filter(q => q.sourceFileName === filename);
+
+            toDelete.forEach(q => {
+                if (q.id !== undefined) store.delete(q.id);
+            });
+
+            tx.oncomplete = () => {
+                console.log(`Gelöscht: ${toDelete.length} Fragen aus Datei "${filename}"`);
+                resolve();
+            };
+        };
+
+        getAllRequest.onerror = (event) => {
+            console.error("Fehler beim Lesen:", event.target.error);
+            reject(event.target.error);
+        };
     });
 }
 
-export function updateQuestion(indexedQuestion) {
+export function saveToDB(questionObj) {
     return new Promise((resolve, reject) => {
-        if (!db) return reject("Datenbank nicht initialisiert.");
-        const tx = db.transaction(['questions'], 'readwrite');
-        const store = tx.objectStore('questions');
-        const req = store.put(indexedQuestion);
-        req.onsuccess = () => resolve();
-        req.onerror = (e) => reject(e.target.error);
+        if (!db) return reject("DB nicht initialisiert");
+
+        const transaction = db.transaction(['questions'], 'readwrite');
+        const store = transaction.objectStore('questions');
+        const request = store.add(questionObj);
+
+        request.onsuccess = () => resolve();
+        request.onerror = (e) => reject(e);
     });
 }
 
 export function getQuestions() {
     return new Promise((resolve, reject) => {
-        const tx = db.transaction(['questions'], 'readonly');
-        const store = tx.objectStore('questions');
-        const req = store.getAll();
+        const transaction = db.transaction(['questions'], 'readonly');
+        const store = transaction.objectStore('questions');
+        const request = store.getAll();
 
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = (e) => reject(e.target.error);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = (e) => reject(e);
     });
 }
 
-export function clearQuestions() {
+export function updateQuestion(questionObj) {
     return new Promise((resolve, reject) => {
-        const tx = db.transaction(['questions'], 'readwrite');
-        const store = tx.objectStore('questions');
-        const req = store.clear();
+        const transaction = db.transaction(['questions'], 'readwrite');
+        const store = transaction.objectStore('questions');
+        const request = store.put(questionObj);
 
-        req.onsuccess = () => resolve();
-        req.onerror = (e) => reject(e.target.error);
+        request.onsuccess = () => resolve();
+        request.onerror = (e) => reject(e);
+    });
+}
+
+export function deleteXmlFile(filename) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['questions'], 'readwrite');
+        const objectStore = transaction.objectStore('questions');
+        const request = objectStore.getAll();
+
+        request.onsuccess = function () {
+            const allQuestions = request.result;
+            const matching = allQuestions.filter(q => q.sourceFile === filename);
+
+            let deleteCount = 0;
+            matching.forEach(q => {
+                if (q.id !== undefined) {
+                    objectStore.delete(q.id);
+                    deleteCount++;
+                }
+            });
+
+            transaction.oncomplete = () => {
+                console.log(`Deleted ${deleteCount} questions from file ${filename}`);
+                resolve();
+            };
+        };
+
+        request.onerror = function (event) {
+            console.error("Fehler beim Abrufen aus DB:", event.target.error);
+            reject(event.target.error);
+        };
     });
 }

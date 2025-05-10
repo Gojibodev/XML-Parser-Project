@@ -9,11 +9,16 @@ export function setupExportButton() {
             const questions = await getQuestions();
             const selectedQuestions = questions.filter(q => q.selected !== false && q.originalXml);
 
-            const xmlContent = `<quiz>\n${selectedQuestions.map(q => q.originalXml.trim()).join('\n')}\n</quiz>`;
+            if (selectedQuestions.length === 0) {
+                alert("Keine Fragen zum Export ausgewählt.");
+                return;
+            }
+
+            const xmlContent = `<quiz>\n\n${selectedQuestions.map(q => q.originalXml.trim()).join('\n\n')}\n\n</quiz>`;
             const blob = new Blob([xmlContent], { type: 'application/xml' });
 
             const filenameInput = document.querySelector('#export-container input[type="text"]');
-            const filename = (filenameInput.value || 'export') + '.xml';
+            const filename = (filenameInput?.value.trim() || 'export') + '.xml';
 
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);

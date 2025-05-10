@@ -2,88 +2,69 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>XML Parser</title>
-    
+
     <!-- CodeMirror CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
-
-    <!-- general style -->
-    <link rel="stylesheet" href="./css/styles.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+    <!-- General style -->
+    <link rel="stylesheet" href="./css/styles.css" />
     <!-- CodeMirror JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
-
-    <!-- XML Mode -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
-
-    <!-- Optional: Theme -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
-
-
-
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css" />
 </head>
 
 <body>
     <h1>XML Parser</h1>
-    <div id="upload-div">
-        <input type="file" id="file-input" accept=".xml" hidden>
-        <p id="upload-text">Drag & Drop your file here or <span id="browse-btn" style="color: #ff4d7a; text-decoration: underline; font-weight: bolder;">Browse</span></p>
-    </div>
-    
-    <div id="div-container">
 
+    <div id="upload-div">
+        <input type="file" id="file-input" accept=".xml" hidden />
+        <div id="upload-text">
+            Drag & Drop your file here or 
+            <button id="browse-btn" type="button">Browse</button>
+        </div>
+        <ul id="upload-list"></ul>
+    </div>
+
+    <div id="div-container">
         <div id="selection-div">
             <h2>SELECT</h2>
             <div id="selection-btns">
                 <button id="select-all">Select All</button>
             </div>
             <div id="selection-container">
-                <h4>elements to be included in the XML output:</h4><br>
-                <div class="selection-elem">
-                    <input type="checkbox" id="" name="id#" value="0" checked>
-                    <label for="select-0">Select 0</label><br>
-                    <div class="subitems" id="subitems">
-                </div>
-                </div>
-                <!-- <div class="selection-elem">
-                    <input type="checkbox" id="select-1" name="select-1" value="1" checked>
-                    <label for="select-1">Select 1</label><br>
-                </div> -->
+                <h4>Elements to be included in the XML output:</h4><br />
             </div>
         </div>
 
         <div id="editor-div">
             <h2>XML Output</h2>
             <textarea id="editor">
-                <PLACEHOLDER>
-                    <message>Hello, this is an XML file!</message>
-                </PLACEHOLDER>
+<PLACEHOLDER>
+    <message>Hello, this is an XML file!</message>
+</PLACEHOLDER>
             </textarea>
         </div>
     </div>
 
-    <!-- export button -->
     <div id="export-container">
         <label for="input">Filename:</label>
-        <input type="text" name="" id="">
-        <button id="export-btn" >Export XML</button>
-        
+        <input type="text" name="" id="" />
+        <button id="export-btn">Export XML</button>
     </div>
-    <!-- Scripts -->
-    <script>
 
-    </script>
+    <!-- Scripts -->
     <script src="./js/worker.js"></script>
-    <script src="./js/editor-parser.js"></script>
     <script src="js/DTOs/ClassesDTO.js"></script>
     <script type="module">
+        import './js/editor-parser.js';
+        import './js/import-xml.js';
         import { setupExportButton } from './js/export-xml.js';
-        import './js/import-xml.js';      
         setupExportButton();
-      </script>
-      
+    </script>
 </body>
 
 </html>
